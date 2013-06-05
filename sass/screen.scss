@@ -10,7 +10,8 @@
 
 $tile: 50px;
 $tileBorder: 1px;
-$ball: $tile - 6;
+$ball: $tile * 0.7;
+/* $tile - 3 * $tileBorder;*/
 $ballShadow: ($tile / 2) - $tileBorder;
 $gray: rgba(0,0,0,0.5);
 
@@ -19,7 +20,7 @@ $gray: rgba(0,0,0,0.5);
 	height: $tile - 2 * $tileBorder;
 	display: inline-block;
 	margin: $tileBorder;
-	@include single-box-shadow($gray, 1px, 1px, 3px, 3px, inset);
+	@include single-box-shadow($gray, $tileBorder, $tileBorder, 3 * $tileBorder, 3 * $tileBorder, inset);
 }
 .tileGrid {
 	display: block;
@@ -27,22 +28,30 @@ $gray: rgba(0,0,0,0.5);
 	max-height: 9 * $tile;
 	margin: 0em auto;
 	background-color: $gray;
-	@include single-box-shadow($gray, 1px, 1px, 3px, 3px);
+	@include single-box-shadow($gray, $tileBorder, $tileBorder, 3 * $tileBorder, 3 * $tileBorder);
 }
 .tile {
 	max-width: $tile;
 }
 .tileSelected {
 	margin: $tileBorder;
-	/* TODO css3 animation goes here */
 }
 .ball {
-	width: $ball; /* use SASS */
+	width: $ball;
   height: $ball;
-	border-radius: $ball / 2;
+	@include border-radius($ball / 2);
 	display: block;
 	position: static;
 	margin: auto;
+  @include box-shadow(inset 0 -5px $ball / 10 rgba(255,255,255,0.4), inset -2px -1px $ball / 3.5 rgba(0,0,0,0.4), 0 0 1px #000);
+	z-index: 11;
+}
+.ballBouncing {
+	-webkit-animation: jump 1s infinite;
+	-moz-animation: jump 1s infinite;
+	-o-animation: jump 1s infinite;
+	-ms-animation: jump 1s infinite;
+	animation: jump 1s infinite;
 }
 .ball::after {
 	content: "";
@@ -50,18 +59,125 @@ $gray: rgba(0,0,0,0.5);
 	height: $ballShadow / 2;
 	position: static;
 	display: block;
-	margin: 2px auto;
+	margin: 0.05 * $tile auto;
 	@include border-radius($ballShadow, $ballShadow / 2);
-}
-.blackball {
-	@include background-image(linear-gradient(top, rgba(187,187,187,1)	0%,rgba(119,119,119,1) 99%));
-  @include box-shadow(inset 0 -5px 15px rgba(255,255,255,0.4), inset -2px -1px 40px rgba(0,0,0,0.4), 0 0 1px #000);
-}
-.blackball::after {
-	content: "";
 	@include background-image(linear-gradient(top,  rgba(232,232,232,1)	0%,rgba(232,232,232,1) 1%,rgba(255,255,255,0) 100%));
 }
+.ballShadow {
+	position: static;
+	display: block;
+	z-index: 10;
+	margin-left: $ball / 2;
+	margin-top: -5px;
+	width: 0.45 * $ball;
+	height: 0.55 * $ball;
+	background: rgba(20, 20, 20, .1);
+	@include single-box-shadow(rgba(20,20,20,.1), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+	@include border-radius($ball / 4.5, $ball / 3.5);
+	-webkit-transform: scaleY(.3);
+	-moz-transform: scaleY(.3);
+	-ms-transform: scaleY(.3);
+	-o-transform: scaleY(.3);
+	transform: scaleY(.3);
+}
+.ballShadowBouncing {
+	-webkit-animation: shrink 1s infinite;
+	-moz-animation: shrink 1s infinite;
+	-o-animation: shrink 1s infinite;
+	-ms-animation: shrink 1s infinite;
+	animation: shrink 1s infinite;
+}
+/* TODO convert colors to functions from one base color */
+$color: rgba(187,187,187,1);
+.blackball {
+	@include background-image(linear-gradient(top, $color	0%, darken($color,20%) 99%));
+}
 
+$color: rgba(240,10,10,1);
+.redball {
+	@include background-image(linear-gradient(top, $color	0%, darken($color,20%) 99%));
+}
+/* TODO add other colors */
+
+/* TODO prefixed keyframes */
+@keyframes jump {
+	0% {
+		margin: 0.05 * $tile auto;
+		animation-timing-function: ease-in;
+	}
+	50% {
+		margin: 0.2 * $tile auto;
+		height: $ball;
+		animation-timing-function: ease-out;
+	}
+	55% {
+		margin: 0.25 * $tile auto;
+		height: 0.85 * $ball;
+		@include border-radius($ball / 2, $ball / 3);
+		animation-timing-function: ease-in;
+	}
+	65% {
+		margin: 0.2 * $tile auto;
+		height: $ball;
+		@include border-radius($ball / 2);
+		animation-timing-function: ease-out;
+	}
+	95% {
+		margin: 0.05 * $tile auto;
+		animation-timing-function: ease-in;
+	}
+	100% {
+		margin: 0.05 * $tile auto;
+		animation-timing-function: ease-in;
+	}
+};
+
+@keyframes shrink {
+	0% {
+		margin-left: $ball / 2;
+		margin-top: -5px;
+		width: 0.45 * $ball;
+		height: 0.55 * $ball;
+		background: rgba(20, 20, 20, .1);
+		@include single-box-shadow(rgba(20,20,20,.1), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+		@include border-radius($ball / 4.5, $ball / 3.5);
+		animation-timing-function: ease-in;
+	}
+	50% {
+		margin-left: $ball / 2 + $ball / 7;
+		margin-top: -5px - 0.15 * $ball;
+		width: 0.15 * $ball;
+		height: 0.05 * $ball;
+		background: rgba(20, 20, 20, .3);
+		@include single-box-shadow(rgba(20,20,20,.3), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+		@include border-radius($ball / 4.5, $ball / 4.5);
+		animation-timing-function: ease-out;
+	}
+	55% {
+		margin-top: -5px - 0.5 * $ball;
+		height: 0.05 * $ball;
+		animation-timing-function: ease-in;
+		background: rgba(20, 20, 20, 0);
+		@include single-box-shadow(rgba(20,20,20,0), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+	}
+	65% {
+		margin-top: -5px - 0.15 * $ball;
+		height: 0.05 * $ball;
+		background: rgba(20, 20, 20, .3);
+		@include single-box-shadow(rgba(20,20,20,.3), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+		animation-timing-function: ease-out;
+	}
+	100% {
+		margin-left: $ball / 2;
+		margin-top: -5px;
+		width: 0.45 * $ball;
+		height: 0.55 * $ball;
+		background: rgba(20, 20, 20, .1);
+		@include single-box-shadow(rgba(20,20,20,.1), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+		@include border-radius($ball / 4.5, $ball / 3.5);
+		animation-timing-function: ease-in;
+	}
+}
 
 /* static */
 		BODY { line-height: 10px; }

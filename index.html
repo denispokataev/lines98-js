@@ -33,8 +33,15 @@
 				$scope.selectedIndex = -1;
 				$scope.colors = ['', 'blackball','redball'];
 				tiles[0][0].c = 1;
+				tiles[0][1].c = 2;
 			};
 			$scope.tileClick = function(tile) {
+				if ($scope.selectedIndex == -1) {
+					$scope.selectedIndex = tile.y*9+tile.x;
+				}
+				else {
+					$scope.selectedIndex = -1;
+				}
 			};
 
 		}
@@ -45,7 +52,8 @@
 		<div class="tileGrid">
 			<div class="tileRow" ng-repeat="row in tiles">
 				<div class="tileBox" ng-class="{tileSelected: selectedIndex == tile.y*9+tile.x}" ng-repeat="tile in row" ng-click="tileClick(tile)">
-					<div class="{{colors[tile.c]}}" ng-class="{ball: tile.c != 0}"></div>
+					<div class="{{colors[tile.c]}}" ng-class="{ball: tile.c != 0,	ballBouncing: selectedIndex == tile.y*9+tile.x}"></div>
+					<div ng-class="{ballShadow: tile.c != 0, ballShadowBouncing: selectedIndex == tile.y*9+tile.x}"></div>
 				</div>
 			</div>
 		</div>
