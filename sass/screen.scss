@@ -1,0 +1,79 @@
+/* Welcome to Compass.
+ * In this file you should write your main styles. (or centralize your imports)
+ * Import this file using the following HTML or equivalent:
+ * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
+
+@import "compass/reset";
+@import "compass/css3/border-radius";
+@import "compass/css3/box-shadow";
+@import "compass/css3/images";
+
+$tile: 50px;
+$tileBorder: 1px;
+$ball: $tile - 6;
+$ballShadow: ($tile / 2) - $tileBorder;
+$gray: rgba(0,0,0,0.5);
+
+.tileBox {
+	width: $tile - 2 * $tileBorder;
+	height: $tile - 2 * $tileBorder;
+	display: inline-block;
+	margin: $tileBorder;
+	@include single-box-shadow($gray, 1px, 1px, 3px, 3px, inset);
+}
+.tileGrid {
+	display: block;
+	max-width: 9 * $tile;
+	max-height: 9 * $tile;
+	margin: 0em auto;
+	background-color: $gray;
+	@include single-box-shadow($gray, 1px, 1px, 3px, 3px);
+}
+.tile {
+	max-width: $tile;
+}
+.tileSelected {
+	margin: $tileBorder;
+	/* TODO css3 animation goes here */
+}
+.ball {
+	width: $ball; /* use SASS */
+  height: $ball;
+	border-radius: $ball / 2;
+	display: block;
+	position: static;
+	margin: auto;
+}
+.ball::after {
+	content: "";
+	width: $ballShadow;
+	height: $ballShadow / 2;
+	position: static;
+	display: block;
+	margin: 2px auto;
+	@include border-radius($ballShadow, $ballShadow / 2);
+}
+.blackball {
+	@include background-image(linear-gradient(top, rgba(187,187,187,1)	0%,rgba(119,119,119,1) 99%));
+  @include box-shadow(inset 0 -5px 15px rgba(255,255,255,0.4), inset -2px -1px 40px rgba(0,0,0,0.4), 0 0 1px #000);
+}
+.blackball::after {
+	content: "";
+	@include background-image(linear-gradient(top,  rgba(232,232,232,1)	0%,rgba(232,232,232,1) 1%,rgba(255,255,255,0) 100%));
+}
+
+
+/* static */
+		BODY { line-height: 10px; }
+		.board {
+			padding-top: 0.4em;
+			padding-left: 0.2em;
+			text-align: center;
+		}
+		.message {
+			font-size: 1em;
+			display: inline-block;
+			padding-top: 0.5em;
+			padding-bottom: 0.3em;
+		}
+
