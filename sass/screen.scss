@@ -37,6 +37,17 @@ $gray: rgba(0,0,0,0.5);
 .tileSelected {
 	margin: $tileBorder;
 }
+.bottom-line {
+	margin-top: 1em;
+}
+.score {
+	text-align: left;
+	margin-right: 2em;
+}
+.balls-score {
+	text-align: right;
+	margin-left: 2em;
+}
 .ball {
 	width: $ball;
   height: $ball;
@@ -111,6 +122,7 @@ $i: 1;
 	50% {
 		margin: 0.2 * $tile auto;
 		height: $ball;
+		@include border-radius($ball / 2);
 		animation-timing-function: ease-out;
 	}
 	55% {
@@ -132,6 +144,134 @@ $i: 1;
 	100% {
 		margin: 0.05 * $tile auto;
 		animation-timing-function: ease-in;
+	}
+};
+@-moz-keyframes jump {
+	0% {
+		margin: 0.05 * $tile auto;
+		-moz-animation-timing-function: ease-in;
+	}
+	50% {
+		margin: 0.2 * $tile auto;
+		height: $ball;
+		@include border-radius($ball / 2);
+		-moz-animation-timing-function: ease-out;
+	}
+	55% {
+		margin: 0.25 * $tile auto;
+		height: 0.85 * $ball;
+		@include border-radius($ball / 2, $ball / 3);
+		-moz-animation-timing-function: ease-in;
+	}
+	65% {
+		margin: 0.2 * $tile auto;
+		height: $ball;
+		@include border-radius($ball / 2);
+		-moz-animation-timing-function: ease-out;
+	}
+	95% {
+		margin: 0.05 * $tile auto;
+		-moz-animation-timing-function: ease-in;
+	}
+	100% {
+		margin: 0.05 * $tile auto;
+		-moz-animation-timing-function: ease-in;
+	}
+};
+@-webkit-keyframes jump {
+	0% {
+		margin: 0.05 * $tile auto;
+		-webkit-animation-timing-function: ease-in;
+	}
+	50% {
+		margin: 0.2 * $tile auto;
+		height: $ball;
+		@include border-radius($ball / 2);
+		-webkit-animation-timing-function: ease-out;
+	}
+	55% {
+		margin: 0.25 * $tile auto;
+		height: 0.85 * $ball;
+		@include border-radius($ball / 2, $ball / 3);
+		-webkit-animation-timing-function: ease-in;
+	}
+	65% {
+		margin: 0.2 * $tile auto;
+		height: $ball;
+		@include border-radius($ball / 2);
+		-webkit-animation-timing-function: ease-out;
+	}
+	95% {
+		margin: 0.05 * $tile auto;
+		-webkit-animation-timing-function: ease-in;
+	}
+	100% {
+		margin: 0.05 * $tile auto;
+		-webkit-animation-timing-function: ease-in;
+	}
+};
+@-o-keyframes jump {
+	0% {
+		margin: 0.05 * $tile auto;
+		-o-animation-timing-function: ease-in;
+	}
+	50% {
+		margin: 0.2 * $tile auto;
+		height: $ball;
+		@include border-radius($ball / 2);
+		-o-animation-timing-function: ease-out;
+	}
+	55% {
+		margin: 0.25 * $tile auto;
+		height: 0.85 * $ball;
+		@include border-radius($ball / 2, $ball / 3);
+		-o-animation-timing-function: ease-in;
+	}
+	65% {
+		margin: 0.2 * $tile auto;
+		height: $ball;
+		@include border-radius($ball / 2);
+		-o-animation-timing-function: ease-out;
+	}
+	95% {
+		margin: 0.05 * $tile auto;
+		-o-animation-timing-function: ease-in;
+	}
+	100% {
+		margin: 0.05 * $tile auto;
+		-o-animation-timing-function: ease-in;
+	}
+};
+@-ms-keyframes jump {
+	0% {
+		margin: 0.05 * $tile auto;
+		-ms-animation-timing-function: ease-in;
+	}
+	50% {
+		margin: 0.2 * $tile auto;
+		height: $ball;
+		@include border-radius($ball / 2);
+		-ms-animation-timing-function: ease-out;
+	}
+	55% {
+		margin: 0.25 * $tile auto;
+		height: 0.85 * $ball;
+		@include border-radius($ball / 2, $ball / 3);
+		-ms-animation-timing-function: ease-in;
+	}
+	65% {
+		margin: 0.2 * $tile auto;
+		height: $ball;
+		@include border-radius($ball / 2);
+		-ms-animation-timing-function: ease-out;
+	}
+	95% {
+		margin: 0.05 * $tile auto;
+		-ms-animation-timing-function: ease-in;
+	}
+	100% {
+		margin: 0.05 * $tile auto;
+		-ms-animation-timing-function: ease-in;
 	}
 };
 
@@ -179,6 +319,194 @@ $i: 1;
 		@include single-box-shadow(rgba(20,20,20,.1), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
 		@include border-radius($ball / 4.5, $ball / 3.5);
 		animation-timing-function: ease-in;
+	}
+}
+
+@-moz-keyframes shrink {
+	0% {
+		margin-left: $ball / 2;
+		margin-top: -5px;
+		width: 0.45 * $ball;
+		height: 0.55 * $ball;
+		background: rgba(20, 20, 20, .1);
+		@include single-box-shadow(rgba(20,20,20,.1), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+		@include border-radius($ball / 4.5, $ball / 3.5);
+		-moz-animation-timing-function: ease-in;
+	}
+	50% {
+		margin-left: $ball / 2 + $ball / 7;
+		margin-top: -5px - 0.15 * $ball;
+		width: 0.15 * $ball;
+		height: 0.05 * $ball;
+		background: rgba(20, 20, 20, .3);
+		@include single-box-shadow(rgba(20,20,20,.3), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+		@include border-radius($ball / 4.5, $ball / 4.5);
+		-moz-animation-timing-function: ease-out;
+	}
+	55% {
+		margin-top: -5px - 0.5 * $ball;
+		height: 0.05 * $ball;
+		-moz-animation-timing-function: ease-in;
+		background: rgba(20, 20, 20, 0);
+		@include single-box-shadow(rgba(20,20,20,0), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+	}
+	65% {
+		margin-top: -5px - 0.15 * $ball;
+		height: 0.05 * $ball;
+		background: rgba(20, 20, 20, .3);
+		@include single-box-shadow(rgba(20,20,20,.3), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+		-moz-animation-timing-function: ease-out;
+	}
+	100% {
+		margin-left: $ball / 2;
+		margin-top: -5px;
+		width: 0.45 * $ball;
+		height: 0.55 * $ball;
+		background: rgba(20, 20, 20, .1);
+		@include single-box-shadow(rgba(20,20,20,.1), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+		@include border-radius($ball / 4.5, $ball / 3.5);
+		-moz-animation-timing-function: ease-in;
+	}
+}
+
+@-webkit-keyframes shrink {
+	0% {
+		margin-left: $ball / 2;
+		margin-top: -5px;
+		width: 0.45 * $ball;
+		height: 0.55 * $ball;
+		background: rgba(20, 20, 20, .1);
+		@include single-box-shadow(rgba(20,20,20,.1), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+		@include border-radius($ball / 4.5, $ball / 3.5);
+		-webkit-animation-timing-function: ease-in;
+	}
+	50% {
+		margin-left: $ball / 2 + $ball / 7;
+		margin-top: -5px - 0.15 * $ball;
+		width: 0.15 * $ball;
+		height: 0.05 * $ball;
+		background: rgba(20, 20, 20, .3);
+		@include single-box-shadow(rgba(20,20,20,.3), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+		@include border-radius($ball / 4.5, $ball / 4.5);
+		-webkit-animation-timing-function: ease-out;
+	}
+	55% {
+		margin-top: -5px - 0.5 * $ball;
+		height: 0.05 * $ball;
+		-webkit-animation-timing-function: ease-in;
+		background: rgba(20, 20, 20, 0);
+		@include single-box-shadow(rgba(20,20,20,0), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+	}
+	65% {
+		margin-top: -5px - 0.15 * $ball;
+		height: 0.05 * $ball;
+		background: rgba(20, 20, 20, .3);
+		@include single-box-shadow(rgba(20,20,20,.3), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+		-webkit-animation-timing-function: ease-out;
+	}
+	100% {
+		margin-left: $ball / 2;
+		margin-top: -5px;
+		width: 0.45 * $ball;
+		height: 0.55 * $ball;
+		background: rgba(20, 20, 20, .1);
+		@include single-box-shadow(rgba(20,20,20,.1), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+		@include border-radius($ball / 4.5, $ball / 3.5);
+		-webkit-animation-timing-function: ease-in;
+	}
+}
+
+@-o-keyframes shrink {
+	0% {
+		margin-left: $ball / 2;
+		margin-top: -5px;
+		width: 0.45 * $ball;
+		height: 0.55 * $ball;
+		background: rgba(20, 20, 20, .1);
+		@include single-box-shadow(rgba(20,20,20,.1), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+		@include border-radius($ball / 4.5, $ball / 3.5);
+		-o-animation-timing-function: ease-in;
+	}
+	50% {
+		margin-left: $ball / 2 + $ball / 7;
+		margin-top: -5px - 0.15 * $ball;
+		width: 0.15 * $ball;
+		height: 0.05 * $ball;
+		background: rgba(20, 20, 20, .3);
+		@include single-box-shadow(rgba(20,20,20,.3), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+		@include border-radius($ball / 4.5, $ball / 4.5);
+		-o-animation-timing-function: ease-out;
+	}
+	55% {
+		margin-top: -5px - 0.5 * $ball;
+		height: 0.05 * $ball;
+		-o-animation-timing-function: ease-in;
+		background: rgba(20, 20, 20, 0);
+		@include single-box-shadow(rgba(20,20,20,0), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+	}
+	65% {
+		margin-top: -5px - 0.15 * $ball;
+		height: 0.05 * $ball;
+		background: rgba(20, 20, 20, .3);
+		@include single-box-shadow(rgba(20,20,20,.3), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+		-o-animation-timing-function: ease-out;
+	}
+	100% {
+		margin-left: $ball / 2;
+		margin-top: -5px;
+		width: 0.45 * $ball;
+		height: 0.55 * $ball;
+		background: rgba(20, 20, 20, .1);
+		@include single-box-shadow(rgba(20,20,20,.1), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+		@include border-radius($ball / 4.5, $ball / 3.5);
+		-o-animation-timing-function: ease-in;
+	}
+}
+
+@-ms-keyframes shrink {
+	0% {
+		margin-left: $ball / 2;
+		margin-top: -5px;
+		width: 0.45 * $ball;
+		height: 0.55 * $ball;
+		background: rgba(20, 20, 20, .1);
+		@include single-box-shadow(rgba(20,20,20,.1), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+		@include border-radius($ball / 4.5, $ball / 3.5);
+		-ms-animation-timing-function: ease-in;
+	}
+	50% {
+		margin-left: $ball / 2 + $ball / 7;
+		margin-top: -5px - 0.15 * $ball;
+		width: 0.15 * $ball;
+		height: 0.05 * $ball;
+		background: rgba(20, 20, 20, .3);
+		@include single-box-shadow(rgba(20,20,20,.3), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+		@include border-radius($ball / 4.5, $ball / 4.5);
+		-ms-animation-timing-function: ease-out;
+	}
+	55% {
+		margin-top: -5px - 0.5 * $ball;
+		height: 0.05 * $ball;
+		-ms-animation-timing-function: ease-in;
+		background: rgba(20, 20, 20, 0);
+		@include single-box-shadow(rgba(20,20,20,0), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+	}
+	65% {
+		margin-top: -5px - 0.15 * $ball;
+		height: 0.05 * $ball;
+		background: rgba(20, 20, 20, .3);
+		@include single-box-shadow(rgba(20,20,20,.3), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+		-ms-animation-timing-function: ease-out;
+	}
+	100% {
+		margin-left: $ball / 2;
+		margin-top: -5px;
+		width: 0.45 * $ball;
+		height: 0.55 * $ball;
+		background: rgba(20, 20, 20, .1);
+		@include single-box-shadow(rgba(20,20,20,.1), 0px, 0px, 0.2 * $ball, 0.25 *	$ball);
+		@include border-radius($ball / 4.5, $ball / 3.5);
+		-ms-animation-timing-function: ease-in;
 	}
 }
 
