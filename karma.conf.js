@@ -13,6 +13,7 @@ files = [
   REQUIRE,
   REQUIRE_ADAPTER,
   'https://ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js',
+  'http://code.angularjs.org/1.0.7/angular-mocks.js',
   'js/main.js',
   {pattern: 'js/t/*.js', included: true},
    'js/test.js'

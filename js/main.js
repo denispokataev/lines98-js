@@ -186,7 +186,7 @@ function ssBoardCtrl($scope, $timeout) {
 	$scope.finalizeMove = function(tile, prev_color){
 		var newMoveNeeded = 0;
 		// Check for completed lines
-		if (!$scope.checkLines(tile)) {
+		if (!$scope.checkLines(tile) || $scope.emptyTiles == 78) {
 			// make new move
 			newMoveNeeded = 1;
 		}
@@ -221,6 +221,8 @@ function ssBoardCtrl($scope, $timeout) {
 		if (newMoveNeeded) {
 			$scope.newMove();
 		}
+		// cleanup
+		$scope.preserve = 0;
 		$scope.animation = 0;
 	};
 	$scope.checkLines = function(tile){

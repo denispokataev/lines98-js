@@ -1,8 +1,17 @@
 'use strict';
-var $scope = {};
+var $scope,$timeout;
 
-ssBoardCtrl($scope);
-$scope.startGame();
+//beforeEach(module('ssGameApp'));
+beforeEach(inject(function($rootScope,$controller,$injector){
+	if (!$timeout) {
+		$scope = $rootScope.$new();
+		$timeout = $injector.get('$timeout');
+		ssBoardCtrl($scope,$timeout);
+		$scope.startGame();
+	}
+	//$controller('ssBoardCtrl', ['$scope,$timeout']);
+
+}));
 
 describe("Test grid", function(){
 	it("should be 81 tiles", function(){
@@ -43,46 +52,61 @@ describe("Test grid", function(){
 describe("Moves", function(){
 	it("should be done", function(){
 		generateBoard($scope, "RR0R");
-		// make a move
-		$scope.tileClick($scope.tiles[0][3]);
-		$scope.tileClick($scope.tiles[0][2]);
-		// check that ball moved
-		expect($scope.tiles[0][3].c).toEqual(0);
-		expect($scope.tiles[0][2].c).toEqual(1);
-		expect($scope.emptyTiles).toEqual(72);
+		runs(function() {
+			// make a move
+			$scope.tileClick($scope.tiles[0][3]);
+			$scope.tileClick($scope.tiles[0][2]);
+		});
+		waitsFor(function(){ $timeout.flush(); return $scope.animation == 0}, "Should finish animation", 500);
+		runs(function(){
+			// check that ball moved
+			expect($scope.tiles[0][3].c == 0 || $scope.tiles[0][3].n == 1).toEqual(true);
+			expect($scope.tiles[0][2].c).toEqual(1);
+			expect($scope.emptyTiles).toEqual(72);
+		});
 	});
 	it("should remove lines", function(){
 		generateBoard($scope, "RRRR0R", 0);
-		// make a move
-		$scope.tileClick($scope.tiles[0][5]);
-		$scope.tileClick($scope.tiles[0][4]);
-		// check no balls in line left
-		if ($scope.tiles[0][0].n == 0) {
-			expect($scope.tiles[0][0].c).toEqual(0);
-		}
-		expect($scope.emptyTiles).toEqual(75);
-		expect(validateBoard($scope)).toEqual(1);
-		expect($scope.ballsRemoved).toEqual(5);
-		expect($scope.points).toEqual(5);
+		runs(function(){
+			// make a move
+			$scope.tileClick($scope.tiles[0][5]);
+			$scope.tileClick($scope.tiles[0][4]);
+		});
+		waitsFor(function(){ $timeout.flush(); return $scope.animation == 0}, "Should finish animation", 500);
+		runs(function(){
+			// check no balls in line left
+			if ($scope.tiles[0][0].n == 0) {
+				expect($scope.tiles[0][0].c).toEqual(0);
+			}
+			expect($scope.emptyTiles).toEqual(75);
+			expect(validateBoard($scope)).toEqual(1);
+			expect($scope.ballsRemoved).toEqual(5);
+			expect($scope.points).toEqual(5);
+		});
 	});
 	// Test for multiline
 	it("should remove long lines", function(){
 		var spec = "RRRR0RRRR" + "R";
 		generateBoard($scope, spec, 0);
-		// make a move
-		$scope.tileClick($scope.tiles[1][0]);
-		$scope.tileClick($scope.tiles[0][4]);
-		// check no balls in line left
-		if ($scope.tiles[0][0].n == 0) {
-			expect($scope.tiles[0][0].c).toEqual(0);
-		}
-		if ($scope.tiles[0][8].n == 0) {
-			expect($scope.tiles[0][8].c).toEqual(0);
-		}
-		expect($scope.emptyTiles).toEqual(75);
-		expect(validateBoard($scope)).toEqual(1);
-		expect($scope.ballsRemoved).toEqual(9);
-		expect($scope.points).toEqual(80);
+		runs(function(){
+			// make a move
+			$scope.tileClick($scope.tiles[1][0]);
+			$scope.tileClick($scope.tiles[0][4]);
+		});
+		waitsFor(function(){ $timeout.flush(); return $scope.animation == 0}, "Should finish animation", 500);
+		runs(function(){
+			// check no balls in line left
+			if ($scope.tiles[0][0].n == 0) {
+				expect($scope.tiles[0][0].c).toEqual(0);
+			}
+			if ($scope.tiles[0][8].n == 0) {
+				expect($scope.tiles[0][8].c).toEqual(0);
+			}
+			expect($scope.emptyTiles).toEqual(75);
+			expect(validateBoard($scope)).toEqual(1);
+			expect($scope.ballsRemoved).toEqual(9);
+			expect($scope.points).toEqual(80);
+		});
 	})
 	it("should remove multilines", function(){
 		var spec = 
@@ -92,24 +116,176 @@ describe("Moves", function(){
 			"0000R0000" +
 			"0000R0000";
 		generateBoard($scope, spec, 0);
-		// make a move
-		$scope.tileClick($scope.tiles[0][8]);
-		$scope.tileClick($scope.tiles[0][4]);
-		// check no balls in line left
-		if ($scope.tiles[0][0].n == 0) {
+		runs(function(){
+			// make a move
+			$scope.tileClick($scope.tiles[0][8]);
+			$scope.tileClick($scope.tiles[0][4]);
+		});
+		waitsFor(function(){ $timeout.flush(); return $scope.animation == 0}, "Should finish animation", 500);
+		runs(function(){
+			// check no balls in line left
+			if ($scope.tiles[0][0].n == 0) {
+				expect($scope.tiles[0][0].c).toEqual(0);
+			}
+			if ($scope.tiles[4][4].n == 0) {
+				expect($scope.tiles[4][4].c).toEqual(0);
+			}
+			expect($scope.emptyTiles).toEqual(75);
+			expect(validateBoard($scope)).toEqual(1);
+			expect($scope.ballsRemoved).toEqual(9);
+			expect($scope.points).toEqual(80);
+		});
+	});
+	// Test for completing line by next-turn upgrade
+	it("should clear line by next-turn upgrade", function(){
+		var spec = "RRRr0R";
+		generateBoard($scope, spec, 0);
+		runs(function(){
+			// make a move
+			$scope.tileClick($scope.tiles[0][5]);
+			$scope.tileClick($scope.tiles[0][4]);
+		});
+		waitsFor(function(){ $timeout.flush(); return $scope.animation == 0}, "Should finish animation", 500);
+		runs(function(){
+			expect($scope.tiles[0][3].c == 0 || $scope.tiles[0][3].n == 1).toEqual(true);
+			expect($scope.tiles[0][4].c == 0 || $scope.tiles[0][4].n == 1).toEqual(true);
+			expect($scope.tiles[0][5].c == 0 || $scope.tiles[0][5].n == 1).toEqual(true);
+			expect($scope.emptyTiles).toEqual(76);
+			expect(validateBoard($scope)).toEqual(1);
+			expect($scope.ballsRemoved).toEqual(5);
+		});
+	});
+	// Test for moving on next-turn
+	it("should move on next-turn ball", function(){
+		var spec = "RRRbbRb";
+		generateBoard($scope, spec, 0);
+		runs(function(){
+			// make a move
+			$scope.tileClick($scope.tiles[0][5]);
+			$scope.tileClick($scope.tiles[0][4]);
+		});
+		waitsFor(function(){ $timeout.flush(); return $scope.animation == 0}, "Should finish animation", 500);
+		runs(function(){
+			expect($scope.tiles[0][4].c).toEqual(1);
+			expect($scope.tiles[0][4].n).toEqual(0);
+			expect($scope.tiles[0][3].c).toEqual(2);
+			expect($scope.tiles[0][6].c).toEqual(2);
+			expect($scope.tiles[0][3].n).toEqual(0);
+			expect($scope.tiles[0][6].n).toEqual(0);
+			expect($scope.nextMove.length).toEqual(3);
+			var ok = 0;
+			if ($scope.tiles[0][5].c == 2 && $scope.tiles[0][5].n == 0) { ok = 1 }
+			if(!ok) {
+				for (var i = 7; i < 81; i++) {
+					if ($scope.tiles[Math.floor(i/9)][i%9].n == 0 && $scope.tiles[Math.floor(i/9)][i%9].c == 2) { ok = 1 }
+				}
+			}
+			expect(ok).toEqual(1);
+			expect($scope.emptyTiles).toEqual(71);
+			expect(validateBoard($scope)).toEqual(1);
+			expect($scope.ballsRemoved).toEqual(0);
+		});
+	});
+	// Test for moving on next-turn and completing line
+	it("should move on next-turn ball and complete line", function(){
+		var spec = "RRRRb000R" + "BBB";
+		generateBoard($scope, spec, 0);
+		runs(function(){
+			// make a move
+			$scope.tileClick($scope.tiles[0][8]);
+			$scope.tileClick($scope.tiles[0][4]);
+		});
+		waitsFor(function(){ $timeout.flush(); return $scope.animation == 0}, "Should finish animation", 500);
+		runs(function(){
+			// check no balls in line left
 			expect($scope.tiles[0][0].c).toEqual(0);
-		}
-		if ($scope.tiles[4][4].n == 0) {
-			expect($scope.tiles[4][4].c).toEqual(0);
-		}
-		expect($scope.emptyTiles).toEqual(75);
-		expect(validateBoard($scope)).toEqual(1);
-		expect($scope.ballsRemoved).toEqual(9);
-		expect($scope.points).toEqual(80);
-	})
-	// TODO Test for moving on next-turn
-	// TODO Test for moving on next-turn and completing line
-	// TODO Test for filling whole board
+			expect($scope.tiles[0][8].c).toEqual(0);
+			expect($scope.tiles[0][4].c).toEqual(2);
+			expect($scope.tiles[0][4].n).toEqual(1);
+			expect($scope.emptyTiles).toEqual(75);
+			expect(validateBoard($scope)).toEqual(1);
+			expect($scope.ballsRemoved).toEqual(5);
+		});
+	})	
+	// Test for moving through next-turn
+	it("should move through next-turn ball", function(){
+		var spec = 
+			"RRR0b0R00" + 
+			"bb00R0000";
+		generateBoard($scope, spec, 0);
+		runs(function(){
+			// make a move
+			$scope.tileClick($scope.tiles[0][6]);
+			$scope.tileClick($scope.tiles[0][3]);
+		});
+		waitsFor(function(){ $timeout.flush(); return $scope.animation == 0}, "Should finish animation", 500);
+		runs(function(){
+			// check no balls in line left
+			expect($scope.tiles[0][3].c).toEqual(1);
+			expect($scope.tiles[0][4].c).toEqual(2);
+			expect($scope.tiles[0][4].n).toEqual(0);
+			expect($scope.tiles[1][0].c).toEqual(2);
+			expect($scope.tiles[1][0].n).toEqual(0);
+			expect($scope.tiles[1][1].c).toEqual(2);
+			expect($scope.tiles[1][1].n).toEqual(0);
+			expect($scope.tiles[0][6].c == 0 || $scope.tiles[0][6].n == 1).toEqual(true);
+			expect($scope.emptyTiles).toEqual(70);
+			expect(validateBoard($scope)).toEqual(1);
+			expect($scope.ballsRemoved).toEqual(0);
+		});
+	})	
+	// Test for moving next to next-turn
+	it("should move next to next-turn ball", function(){
+		var spec = 
+			"RRRR00b0R" + 
+			"0000R0000";
+		generateBoard($scope, spec, 0);
+		runs(function(){
+			// make a move
+			$scope.tileClick($scope.tiles[1][4]);
+			$scope.tileClick($scope.tiles[1][6]);
+		});
+		waitsFor(function(){ $timeout.flush(); return $scope.animation == 0}, "Should finish animation", 500);
+		runs(function(){
+			expect($scope.tiles[0][6].c).toEqual(2);
+			expect($scope.tiles[0][6].n).toEqual(0);
+			expect($scope.emptyTiles).toEqual(69);
+			expect(validateBoard($scope)).toEqual(1);
+			expect($scope.ballsRemoved).toEqual(0);
+		});
+	})	
+	// Test for filling whole board
+	it("should gameover on board filled", function(){
+		var spec = 
+			"RBRBRBRBR" + 
+			"BRBRBRBRB" +
+			"BRBRBRBRB" +
+			"RBRBRBRBR" +
+			"RBRBRBRBR" +
+			"BRBRBRBRB" +
+			"BRBRBRBRB" +
+			"RBRBRBRBR" +
+			"RBRBRBrbr";
+		generateBoard($scope, spec, 0);
+		runs(function(){
+			// make a move
+			$scope.tileClick($scope.tiles[8][5]);
+			$scope.tileClick($scope.tiles[8][6]);
+		});
+		waitsFor(function(){ $timeout.flush(); return $scope.animation == 0}, "Should finish animation", 500);
+		runs(function(){
+			expect($scope.tiles[8][5].c).toEqual(1);
+			expect($scope.tiles[8][5].n).toEqual(0);
+			expect($scope.tiles[8][6].c).toEqual(2);
+			expect($scope.tiles[8][6].n).toEqual(0);
+			expect($scope.tiles[8][7].c).toEqual(2);
+			expect($scope.tiles[8][7].n).toEqual(0);
+			expect($scope.tiles[8][8].c).toEqual(1);
+			expect($scope.tiles[8][8].n).toEqual(0);
+			expect($scope.emptyTiles).toEqual(0);
+			expect($scope.gameover).toEqual(1);
+		});
+	});
 });
 
 // spec: string of 0 to 81 char
@@ -123,7 +299,7 @@ function generateBoard(scope, spec, score){
 		next = [],
 		i = 0;
 	for (var j = 0; j < spec.length; j++) {
-		switch (spec[i]) {
+		switch (spec[j]) {
 			case 'R':
 				scope.tiles[Math.floor(i/9)][i%9].c = 1;
 				scope.tiles[Math.floor(i/9)][i%9].n = 0;
@@ -139,16 +315,16 @@ function generateBoard(scope, spec, score){
 			case 'r':
 				scope.tiles[Math.floor(i/9)][i%9].c = 1;
 				scope.tiles[Math.floor(i/9)][i%9].n = 1;
+				next.push({x: i%9, y: Math.floor(i/9), c: 1});
 				empty--;
 				i++;
-				next.push({x: i%9, y: Math.floor(i/9), c: 1});
 				break;
 			case 'b':
 				scope.tiles[Math.floor(i/9)][i%9].c = 2;
 				scope.tiles[Math.floor(i/9)][i%9].n = 1;
+				next.push({x: i%9, y: Math.floor(i/9), c: 2});
 				empty--;
 				i++;
-				next.push({x: i%9, y: Math.floor(i/9), c: 2});
 				break;
 			case '0':
 				scope.tiles[Math.floor(i/9)][i%9].c = 0;
@@ -173,6 +349,8 @@ function generateBoard(scope, spec, score){
 	}
 	scope.nextMove = next;
 	scope.emptyTiles = empty;
+	scope.animation = null;
+	scope.preserve = 0;
 	if (score != undefined) {
 		scope.ballsRemoved = score;
 		scope.points = score;
