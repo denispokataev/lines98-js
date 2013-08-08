@@ -10,11 +10,15 @@ function ssBoardCtrl($scope, $timeout) {
 				tiles[i][j] = {x: j, y: i, c: 0, n: 0};
 			}
 		}
+		// cleanup in case of restart
+		$scope.undo = undefined;
+		// state vars (+nextMove)
 		$scope.gameover = 0;
 		$scope.points = 0;
 		$scope.ballsRemoved = 0;
 		$scope.tiles = tiles;
 		$scope.emptyTiles = 81;
+
 		$scope.selectedIndex = -1;
 		$scope.colors = ['', 'blackball','redball', 'blueball', 'greenball', 'yellowball', 'magentaball', 'cyanball'];
 		$scope.drawTriple($scope.getTriple());
@@ -131,6 +135,15 @@ function ssBoardCtrl($scope, $timeout) {
 				if (testCoord(cur.y+1,cur.x) == 0) { break; }
 			}
 			if (ok) {
+				// update undo
+				$scope.undo = {
+					gameover: $scope.gameover,
+					points: $scope.points,
+					ballsRemoved: $scope.ballsRemoved,
+					tiles: angular.copy($scope.tiles),
+					emptyTiles: $scope.emptyTiles,
+					nextMove: angular.copy($scope.nextMove)
+				};
 				// Remove selection
 				$scope.selectedIndex = -1;
 				// Animate path move
@@ -139,7 +152,7 @@ function ssBoardCtrl($scope, $timeout) {
 				var counter = 0;
 				while (1) {
 					if (getLowestNeighbour(path)) { break; }
-					counter++;					
+					counter++;
 					if (counter > 100) { alert("Bailing out"); break; }
 				}
 				var prev_color = tile.n ? tile.c : 0;
@@ -147,7 +160,11 @@ function ssBoardCtrl($scope, $timeout) {
 				$scope.animation = {path: path, tile: tile, prev_color: prev_color};
 				$timeout(function(){$scope.makeMove()}, 50, 1);
 			}
-			// Else - do nothing // TODO "no path" reaction
+			else {
+				// Else - do nothing
+				$scope.error = 1;
+				$timeout(function(){$scope.error = 0}, 100, 1);
+			}
 		}
 		else if (tile.c != 0 && tile.n == 0) {
 			if ($scope.selectedIndex == tile.y*9+tile.x) {
@@ -256,6 +273,20 @@ function ssBoardCtrl($scope, $timeout) {
 			return 1;
 		}
 		return 0;
+	};
+	$scope.undoMove = function(){
+		if (!$scope.undo || $scope.animation) { return }
+		$scope.gameover = $scope.undo.gameover;
+		$scope.points = $scope.undo.points;
+		$scope.ballsRemoved = $scope.undo.ballsRemoved;
+		$scope.tiles = $scope.undo.tiles;
+		$scope.emptyTiles = $scope.undo.emptyTiles;
+		$scope.nextMove = $scope.undo.nextMove;
+		$scope.undo = undefined;
+	};
+	$scope.restart = function(){
+		if ($scope.animation) { return }
+		$scope.startGame();
 	};
 }
 

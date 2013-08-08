@@ -17,12 +17,15 @@
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
 	<script>
-	
+
 	</script>
 </head>
 <body>
 	<div class="board" ng-controller="ssBoardCtrl" ng-init="startGame()">
-		<div class="tileGrid">
+		<div ng-class="{gameover: gameover, hidden: !gameover}">
+			GAME OVER
+		</div>
+		<div class="tileGrid" ng-class="{error: error}">
 			<div class="tileRow" ng-repeat="row in tiles">
 				<div class="tileBox" ng-class="{tileSelected: selectedIndex == tile.y*9+tile.x}" ng-repeat="tile in row" ng-click="tileClick(tile)">
 					<div class="{{colors[tile.c]}}" ng-class="{ball: tile.c != 0,	ballBouncing: selectedIndex == tile.y*9+tile.x, smallBall: tile.n == 1}"></div>
@@ -31,8 +34,10 @@
 			</div>
 		</div>
 		<div class="bottom-line">
+			<span class="button btn btn-default" ng-click="undoMove()">Undo</span>
 			<span class="score">Score: {{points}}</span>
 			<span class="balls-score">Balls: {{ballsRemoved}}</span>
+			<span class="button btn btn-deafult" ng-click="restart()">Restart</span>
 		</div>
 		</div>
 	</div>
